@@ -1,6 +1,7 @@
 
 const input_el = document.getElementById("prompt");
 const output_el = document.getElementById("output");
+const terminal_el = document.getElementById("terminal");
 
 var state = {
 	x: 0,
@@ -60,6 +61,81 @@ function handle_keypress(event) {
 
 			case "display":
 				return handleDisplay(command, arguments);
+
+			case "color":
+				// I don't want to write many functions, let's keep this
+				// here so that they won't feel like each thing requires
+				// a function.
+
+				if (arguments.length < 1) {
+					return message('Please provide a color.')
+				}
+
+				else {
+					let color = arguments[0];
+					document.body.style.backgroundColor = color;
+					message(`Changed color to ${color}.`);
+				}
+
+				break;
+
+			// implement some nice algorithmic challenges:
+			case "printnum":
+				if (arguments.length < 1) {
+					return message('Please provide N.')
+				}
+
+				else {
+					// TODO: explain what parseInt does.
+					let n = parseInt(arguments[0]);
+
+					for (var i = 0; i < n; i++) {
+						message(i + 1);
+					}
+
+					message('Finished.')
+				}
+
+				break;
+
+			case "triangle":
+				if (arguments.length < 1) {
+					return message('Please provide a size.')
+				}
+
+				else {
+					// TODO: explain what parseInt does.
+					let n = parseInt(arguments[0]);
+
+					for (var i = 0; i <= n; i++) {
+						var result = ''
+
+						for (var j = 0; j < i; j++) {
+							result = result + "*"
+						}
+
+						message(result)
+					}
+
+					message('Finished.')
+				}
+
+				break;
+
+			case "cos":
+				if (arguments.length < 1) {
+					return message('Please provide X.')
+				}
+
+				else {
+					// TODO: explain what parseInt does.
+					let x = parseInt(arguments[0]);
+
+					// Math is a record of functions...
+					message(`Result: ${Math.cos(x)}`)
+				}
+
+				break;
 
 			case "rename":
 				return handleRename(command, arguments);
