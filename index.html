@@ -12,7 +12,7 @@
                 <p class="row">Welcome to the terminal!</p>
             </div>
 
-            <input id="prompt" />
+            <input id="prompt" placeholder="$: Enter command here..." />
         </div>
     </body>
 
@@ -23,17 +23,8 @@
             height: 100%;
         }
 
-        .terminal {
-            height: 100%;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
         * {
-            padding: 0;
-            margin: 0;
+            box-sizing: border-box;
 
             width: 100%;
             color: green;
@@ -42,10 +33,25 @@
             transition: font-size 2s;
         }
 
+        .terminal {
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            /* give terminal extra padding */
+            padding: 1rem 0.5rem;
+        }
+
         .output {
             overflow: scroll;
 
             font-family: "Courier New", monospace;
+        }
+
+        .output p {
+            margin: 0;
         }
 
         input {
@@ -58,7 +64,7 @@
         }
 
         body {
-            background: black;
+            background: #010c1f;
         }
     </style>
 </html>

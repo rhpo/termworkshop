@@ -8,16 +8,23 @@ var state = {
 	pi: Math.PI
 }
 
-function message(text, isError) {
+let user = 'esst'
+
+function message(text, colorText) {
+	// Create the box that will hold our message.
 	var p = document.createElement('p');
-	p.innerText = text + '.';
 
-	if (isError) {
-		p.style.color = 'crimson'
-	}
+	// if no color then set it to white.
+	if (!colorText) colorText = 'green';
+	p.style.color = colorText
 
+	// Assign text of the new message element.
+	p.innerText = text;
+
+	// Push this box to the output element.
 	output_el?.appendChild(p);
 
+	// Scroll down to see the last output we just wrote.
 	output_el.scrollTo({
 		top: output_el.scrollHeight
 	})
@@ -29,24 +36,46 @@ function handle_keypress(event) {
 		var text = input_el.value;
 
 		if (text.length === 0)
-			return message('YOu SuCk.', true);
+			return;
+
+		// To remove any sort of confusion we write the command, with the user's name before.
+		message(user + "#~: " + text, 'white');
+
+		// we don't need the input anymore...
+		input_el.value = ''
 
 		var words = text.split(' ');
 		var command = words.shift();
 		var arguments = words;
 
-		input_el.value = '' // we don't need the input anymore...
-
+		// Handle = Manage (little definition to give).
 		switch (command) {
 			case "echo":
+				// Call the handleEcho 'procedure'
 				return handleEcho(command, arguments)
+
+			// NEW FUNCTIONS:
+			case "open":
+				return handleOpen(command, arguments);
 
 			case "display":
 				return handleDisplay(command, arguments);
 
+			case "rename":
+				return handleRename(command, arguments);
+
+			case "stock":
+				return handleAssignment(command, arguments);
+
+			case "show":
+				return handleShow(command, arguments);
+
+			// END NEW FUNCTIONS.
 			case "clear":
 				return handleClear(command, arguments);
 
+			// Explain that we can handle multiple cases
+			// with one Action.
 			case "add":
 			case "sub":
 			case "mul":
@@ -54,7 +83,7 @@ function handle_keypress(event) {
 				return handleBinary(command, arguments);
 
 			default:
-				message(`${command}: command not found`, true)
+				message(`${command}: command not found`, "red")
 				break;
 		}
 
@@ -64,6 +93,30 @@ function handle_keypress(event) {
 function handleEcho(command, arguments) {
 	// print the arguments
 	message(arguments.join(' '));
+}
+
+function handleRename(command, arguments) {
+
+	if (arguments.length < 1)
+		return message('Error: Please provide a name.', 'orange');
+
+	let newName = arguments[0];
+
+	let oldName = user
+	user = newName
+
+	message(`Renamed ${oldName} to ${newName}`);
+}
+
+function handleOpen(command, arguments) {
+
+	if (arguments.length < 1)
+		return message('You have provided no link!', "red");
+
+	let link = arguments[0];
+	message(`Opening ${link}...`);
+
+	open(link);
 }
 
 function handleClear(command, arguments) {
@@ -87,41 +140,51 @@ function handleBinary(command, arguments) {
 	switch (command) {
 		case "add":
 			result = first + second;
-			message(`= ${result}`);
+			message(`Result: ${result}`);
 			break;
 
 		case "sub":
 			result = first - second;
-			message(`= ${result}`);
+			message(`Result: ${result}`);
 			break;
 
 		case "mul":
 			result = first * second;
-			message(`= ${result}`);
+			message(`Result: ${result}`);
 			break;
 
 		case "div":
 			result = first / second;
-			message(`= ${result}`);
+			message(`Result: ${result}`);
 			break;
 	}
-}
-
-function isIdentifier(t) {
-	return /a-z/.test(t);
 }
 
 function handleAssignment(command, arguments) {
 
 	if (arguments.length > 2) {
-		return message('You entered too many arguments', true);
+		return message('You entered too many arguments', "red");
 	}
 
 	var variable = arguments[0];
 	var value = arguments[1];
 	state[variable] = value;
 
-	message(`${variable} = ${value}`);
+	message(`${value} has been assigned to ${variable}.`);
+}
+
+function handleShow(command, arguments) {
+
+	if (arguments.length < 1) {
+		return message('Please provide a variable name');
+	}
+
+	var variable = arguments[0];
+
+	// get the value from the variable.
+	var value = state[variable];
+
+	message(`${variable} is equal to ${value}.`);
 }
 
 input_el?.addEventListener('keypress', handle_keypress);
